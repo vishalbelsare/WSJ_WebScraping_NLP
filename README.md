@@ -1,38 +1,135 @@
+# WSJ Web Scraping & NLP Analysis
+
+A comprehensive analysis of Wall Street Journal articles to investigate relationships between article sentiment, reader engagement, and financial market movements.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Research Questions](#research-questions)
+- [Data Collection](#data-collection)
+- [Natural Language Processing](#natural-language-processing)
+- [Research Findings](#research-findings)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Docker Setup](#docker-setup)
+- [Results & Applications](#results--applications)
+
 ## Project Overview
 
-- In this project I web-scraped news and opinion articles from the **Wall Street Journal (“WSJ”)** in order to investigate a possible relationship between article emotionality, subjectivity, positivity/negativity and **user engagement**, captured through number of comments posted on articles, as well as **S&P 500 returns for that day**
-- To answer these questions, I web scraped 22,772 full text WSJ articles published between Jan-19 and July-20 from the Wall Street Journal’s [news archives](https://www.wsj.com/news/archive/years) using Python's Selenium library
-- For each article, I scraped the article text, headline, sub-headline, date published, author name, number of comments and rubric name in order to gather as much text data as possible for sentiment analysis.
+This project investigates the relationship between Wall Street Journal article sentiment and two key metrics:
+- **User engagement** (measured by comment count)
+- **S&P 500 market returns**
 
-## Research Questions 
+The analysis leverages web scraping and natural language processing to extract insights from 22,772 WSJ articles published between January 2019 and July 2020.
 
-1. Can a statistically significant, causal relationship be demonstrated between a WSJ article's degree of subjectivity/objectivity and positivity/negativity in its writing (as defined by widely used Python sentiment analysis libraries), and the number of online comments posted by readers for that article?
+## Research Questions
 
-1. To the degree that the WSJ enjoys a wide readership in the financial world and that previous findings in the literature indicate a weak linkage between objectivity, emotionality, frequency of media coverage and financial markets fluctuations, can a statistically significant causal relationship be demonstrated between the WSJ's coverage of financial news, specifically WSJ articles’ degree of subjectivity/objectivity and positivity/negativity polarity on a given day t, and stock price movements from the S&P 500 Index on day t + n for 0 <= n <= 3?
+1. **Comment Engagement Analysis**: Can a statistically significant relationship be demonstrated between a WSJ article's degree of subjectivity/objectivity and positivity/negativity in its writing and the number of online comments posted by readers?
 
+2. **Market Prediction Analysis**: Can a statistically significant relationship be demonstrated between WSJ articles' sentiment polarity on day t and S&P 500 Index movements on day t + n (where 0 ≤ n ≤ 3)?
 
-## Natural Language Processing Scores
+## Data Collection
 
-- **NLP Libraries used**: Valence Aware Dictionary and sEntiment Reasoner (“VADER”) and TextBlob, were used to perform sentiment analysis on the combined data. 
-- **VADER**: VADER is a Natural Language Processing sentiment analysis model available through the Python nltk package that outputs polarity (positive/negative) and intensity of emotion scores. VADER output variables incude *negative*, *neutral*, *positive* and *compound* and can be read more about [here](https://pypi.org/project/vaderSentiment/)
-- **TextBlob** is a Python API used for common NLP tasks such as part-of-speech tagging, noun phrase extraction, sentiment analysis, classification, and translation. Textblob output variables incude *polarity* and *subjectivity* and can be read more about [here](https://textblob.readthedocs.io/en/dev/).
+- **Source**: Wall Street Journal [news archives](https://www.wsj.com/news/archive/years)
+- **Method**: Python Selenium web scraping
+- **Dataset**: 22,772 full-text articles (Jan 2019 - July 2020)
+- **Data Points per Article**:
+  - Article text and headline
+  - Sub-headline and publication date
+  - Author name and rubric category
+  - Number of comments
 
-## Research Insights & Conclusion 
+## Natural Language Processing
 
-**Impact of article emotionality / positivity / negativity on number of comments:**
-- Simple linear regression analysis of the sentiment analysis variables on number of comments is shown to be a poor model for explaining the variance in number of comments posted on WSJ articles given extremely low adj R^2 of **0.014**
-- Further based on 0.2045 prob (F-stat) we cannot reject the null hypothesis that the beta coefficients of the polarity, subjectivity, positivity and negativity variables are zero based
-- These results therefore show WSJ sentiment analysis has low predictive power in relation to number of comments posted on WSJ articles, although, quite interestingly, VADER negativity scores are shown to be statistically significant to the 1% level in our models
-    - This may be due to articles with higher negativity scores being more likely to announce events that would entail a public showing of grief or support, such as death of a public figure, which as such may generate more comments on that article
+### Libraries Used
+- **VADER** (Valence Aware Dictionary and sEntiment Reasoner)
+- **TextBlob**
 
-**Predicting future day S&P500 moves with WSJ-article emotionality / positivity / negativity variables** 
-- To answer our second research question, a total of four simple linear regression analyses of the sentiment analysis variables against (i) same-day percentage change in the S&P 500 and (ii) following day percentage change in S&P 500 were performed.
-- Low **~0.01** Adj R^2 values and high p-values for all regressions show these are poor models with low predictive power, even with the VADER neutral values and SPX Volume numbers further added as extra independent variables 
-- These results therefore suggest WSJ sentiment analysis has low predictive power in relation to same-day SPX moves, although, quite interestingly, TextBlob polarity of WSJ article is significant to the 10% level. 
+### VADER Analysis
+- **Purpose**: Polarity and emotion intensity scoring
+- **Output Variables**: `negative`, `neutral`, `positive`, `compound`
+- **Documentation**: [VADER Sentiment](https://pypi.org/project/vaderSentiment/)
 
-## R Shiny app 
+### TextBlob Analysis
+- **Purpose**: Sentiment analysis and subjectivity scoring
+- **Output Variables**: `polarity`, `subjectivity`
+- **Documentation**: [TextBlob Documentation](https://textblob.readthedocs.io/en/dev/)
 
-[Link to R Shiny app](https://philippe1.shinyapps.io/WSJApp2/)
+## Research Findings
 
-[Link to blog post](https://nycdatascience.com/blog/student-works/scraping-wall-street-journal-article-data-to-measure-online-reader-engagement-an-nlp-analysis/)
+### Comment Engagement Results
+- **Model Performance**: Simple linear regression shows poor predictive power (Adj R² = 0.014)
+- **Statistical Significance**: Cannot reject null hypothesis (p-value = 0.2045)
+- **Key Finding**: VADER negativity scores are statistically significant at 1% level
+- **Interpretation**: Higher negativity may correlate with events generating public response (e.g., public figure deaths)
+
+### Market Prediction Results
+- **Model Performance**: Low predictive power across all models (Adj R² ≈ 0.01)
+- **Analysis Scope**: Four regression models testing same-day and next-day S&P 500 movements
+- **Key Finding**: TextBlob polarity shows significance at 10% level
+- **Conclusion**: WSJ sentiment has limited predictive power for market movements
+
+## Project Structure
+
+```
+WSJ_WebScraping_NLP/
+├── app/                    # R Shiny application
+│   ├── global.R
+│   ├── server.R
+│   └── ui.R
+├── data/                   # Processed datasets
+│   └── wsjsections.csv
+├── notebooks/              # Jupyter analysis notebooks
+│   └── WSJ_Scraping NLP_Analysis.ipynb
+├── scraping/               # Web scraping scripts
+│   └── scrape.py
+├── Dockerfile             # Container configuration
+├── README.md              # Project documentation
+└── objectives.md          # Detailed project objectives
+```
+
+## Getting Started
+
+### Prerequisites
+- Python 3.9+
+- R (for Shiny app)
+- Docker (optional)
+
+### Local Setup
+1. Clone the repository
+2. Install Python dependencies: `pip install -r requirements.txt`
+3. Run the Jupyter notebook for analysis
+4. Launch R Shiny app for interactive visualization
+
+## Docker Setup
+
+### Building the Container
+```bash
+docker build -t wsj-nlp-analysis .
+```
+
+### Running the Container
+```bash
+docker run -p 8888:8888 wsj-nlp-analysis
+```
+
+### Accessing the Application
+- Open your browser and navigate to `http://localhost:8888`
+- The Jupyter notebook interface will be available
+- Use the provided token for authentication
+
+### Stopping the Container
+```bash
+docker stop <container_id>
+```
+
+## Results & Applications
+
+### Interactive Dashboard
+- **R Shiny App**: [Live Application](https://philippe1.shinyapps.io/WSJApp2/)
+- **Features**: Interactive sentiment analysis visualization and data exploration
+
+### Documentation
+- **Blog Post**: [Detailed Analysis](https://nycdatascience.com/blog/student-works/scraping-wall-street-journal-article-data-to-measure-online-reader-engagement-an-nlp-analysis/)
+- **Objectives**: See `objectives.md` for detailed project goals and methodology
 
